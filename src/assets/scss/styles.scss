@@ -1,0 +1,111 @@
+$button-hover-color: #fc0404;
+
+@font-face {
+  font-family: 'PF Din Display Pro';
+  src: local('PF Din Display Pro Regular'), local('PF-Din-Display-Pro-Regular'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Regular.woff2') format('woff2'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Regular.woff') format('woff'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PF Din Display Pro';
+  src: local('PF Din Display Pro Medium'), local('PF-Din-Display-Pro-Medium'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Medium.woff2') format('woff2'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Medium.woff') format('woff'),
+  url('../fonts/PFDinDisplayPro/PFDinDisplayPro-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+body {
+  color: var(--black-light);
+}
+
+.margin-left_m {
+  margin-left: 1.05em;
+}
+
+.margin-left_s {
+  margin-left: 0.7em;
+}
+
+.margin_48 {
+  margin: 0 48px;
+}
+
+.m45 {
+  margin: 45px 0 40px;
+}
+
+.m80 {
+  margin: 0 80px;
+}
+
+.m0 {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.pb20 {
+  padding-bottom: 20px;
+}
+
+.col-md-8, .col-md-2 {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.align-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.align-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.mr5 {
+  margin-right: 5px;
+}
+
+.mr25 {
+  margin-right: 25px;
+}
+
+.mb15 {
+  margin-bottom: 15px;
+}
+
+.mb10 {
+  margin-bottom: 10px;
+}
+
+.mr21 {
+  margin-right: 21rem;
+}
+
+.text-blue {
+  color: var(--blue);
+}
+
+.text-black {
+  color: var(--black-light);
+}
+
+.text-green {
+  color: var(--green);
+}
+
+.text-yellow {
+  color: var(--orange);
+}
+
+
+
+
+
