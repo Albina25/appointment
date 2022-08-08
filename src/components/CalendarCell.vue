@@ -53,7 +53,8 @@ export default {
   },
   methods: {
     formatMonth(month) {
-      return (month < 10 ? '0' : '') + month;
+      console.log('mon', month + 1)
+      return (month+1 < 10 ? '0' : '') + (month+1);
     },
     countAllFreeSpaces(appointmentDate) {
       this.freeSpaces--;
