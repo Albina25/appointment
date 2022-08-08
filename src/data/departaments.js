@@ -25,21 +25,6 @@ export const departaments = [
     departamentName: 'Склад',
     employees: [
       {
-        id: 1,
-        name: 'Иванов Иван Иванович',
-        appointment: ''
-      },
-      {
-        id: 2,
-        name: 'Иванов Иван Иванович',
-        appointment: ''
-      },
-      {
-        id: 3,
-        name: 'Иванов Иван Иванович',
-        appointment: ''
-      },
-      {
         id: 4,
         name: 'Иванов Иван Иванович',
         appointment: ''
@@ -78,6 +63,21 @@ export const departaments = [
         id: 11,
         name: 'Иванов Иван Иванович',
         appointment: ''
+      },
+      {
+        id: 12,
+        name: 'Иванов Иван Иванович',
+        appointment: ''
+      },
+      {
+        id: 13,
+        name: 'Иванов Иван Иванович',
+        appointment: ''
+      },
+      {
+        id: 14,
+        name: 'Иванов Иван Иванович',
+        appointment: ''
       }
     ],
   },
@@ -86,52 +86,52 @@ export const departaments = [
     departamentName: 'Инжинеры поддержки',
     employees: [
       {
-        id: 1,
+        id: 15,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 2,
+        id: 16,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 3,
+        id: 17,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 4,
+        id: 18,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 5,
+        id: 19,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 6,
+        id: 20,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 7,
+        id: 21,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 8,
+        id: 22,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 9,
+        id: 23,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },
       {
-        id: 10,
+        id: 24,
         name: 'Иванов Иван Иванович',
         appointment: ''
       },

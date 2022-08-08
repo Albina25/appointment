@@ -16,7 +16,7 @@
       <tbody class="calendar__body">
       <tr v-for="(week, index) in days" :key="`week_${index}`">
         <td v-for="(day, index) in week" :key="`day_${index}`" class="calendar__td">
-          <calendar-cell :day="day" :currentMonth="currentMonth" @countAllFreeSpaces="countSpaces"></calendar-cell>
+          <calendar-cell :day="day" :currentMonth="currentMonth" @countAllFreeSpaces="countSpaces" @addEmployeeIdInCalendar="addEmployeeIdInCalendar"></calendar-cell>
         </td>
       </tr>
       </tbody>
@@ -42,6 +42,7 @@
 
 <script>
 import CalendarCell from "./CalendarCell.vue";
+// import {departaments} from "../data/departaments";
 
 export default {
   name: "BlockCalendar",
@@ -52,7 +53,6 @@ export default {
     return {
       countInTrolley: 0,
       days: [],
-      week: 0,
       allFreeSpaces: 1000,
       contractSpaces: 100,
       contractBusySpaces: 0,
@@ -71,6 +71,16 @@ export default {
     this.showCalendar();
   },
   methods: {
+    addEmployeeIdInCalendar(employeeId, day) {
+      for (let week = 0; week <= this.days.length; week++) {
+        const dayIndex = this.days[week].findIndex(i => i.dayDate === day.dayDate);
+        if (dayIndex >= 0) {
+          if (this.days[week][dayIndex].id.includes(employeeId)) return;
+          this.days[week][dayIndex].id.push(employeeId);
+          break;
+        }
+      }
+    },
     activeMonth(month) {
       let index = this.allMonths.indexOf(month, 0);
       if (index === this.currentMonth) return true;
@@ -88,19 +98,22 @@ export default {
       this.lastDay = lastDay;
       for (let i = 1; i <= lastDay; i++) {
         if (new Date(this.year, this.currentMonth, i).getDay() !== 1) {
-          const dayDate = {date: i, month: this.currentMonth, year: this.year};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: [], freeSpaces: null};
+          // const dayDate = {date: i, month: this.currentMonth, year: this.year};
           this.days[week].push(dayDate);
         } else {
           week++;
           this.days[week] = [];
-          const dayDate = {date: i, month: this.currentMonth};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: []};
+          // const dayDate = {date: i, month: this.currentMonth};
           this.days[week].push(dayDate);
         }
       }
       if (this.days[0].length > 0) {
         let lastDayBeforeMonth = new Date(this.year, this.currentMonth, 0).getDate();
         for (let i = this.days[0].length; i < 7; i++) {
-          const dayDate = {date: lastDayBeforeMonth, month: this.currentMonth-1, year: this.year};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth-1, lastDayBeforeMonth), id: []};
+          // const dayDate = {date: lastDayBeforeMonth, month: this.currentMonth-1, year: this.year};
           this.days[0].unshift(dayDate);
           lastDayBeforeMonth--;
         }
@@ -109,7 +122,8 @@ export default {
       if (this.days[week].length < 7) {
         let dateNextMonth = 1;
         for (let i = this.days[week].length; i < 7; i++) {
-          const dayDate = {date: dateNextMonth, month: this.currentMonth+1, year: this.year};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth+1, dateNextMonth), id: []};
+          // const dayDate = {date: dateNextMonth, month: this.currentMonth+1, year: this.year};
           dateNextMonth++;
           this.days[week].push(dayDate);
         }

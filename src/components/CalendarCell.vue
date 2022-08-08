@@ -4,10 +4,9 @@
        @dragover.prevent
        @dragenter.prevent
   >
-    <div class="cell__date">{{ this.day.date }}</div>
+    <div class="cell__date">{{ date }}</div>
     <div v-if="isCurrentMonth && freeSpaces > 0" :class="['cell__info', {'text-yellow': freeSpaces <= 10}, {'text-green': freeSpaces > 10}]">
-      {{ freeSpaces }} из 50
-<!--      <slot></slot> -->
+      {{ freeSpaces }}&nbsp;из&nbsp;50
     </div>
   </div>
 </template>
@@ -24,6 +23,7 @@ export default {
   data() {
     return {
       freeSpaces: 50,
+      freeSpaces1: 50,
       departaments: departaments,
     }
   },
@@ -43,17 +43,34 @@ export default {
   //     }
   //   }
   // },
+  watch: {
+    fff1(data) {
+      // handler(data) {
+        console.log('new', data);
+        // this.freeSpaces1 = 50 - data.id.length;
+      // },
+      // deep: true,
+      // immediate: true,
+    },
+  },
   computed: {
-    needWatch() {
-      return Object.fromEntries(Object.entries(this.departaments).map(n => [ n[0], n[1].need_watch ]));
+    fff1() {
+      console.log('fff1', this.day.id.length)
+      return 50 - this.day.id.length;
+    },
+    date() {
+      return new Date(this.day.dayDate).getDate();
     },
     isCurrentMonth() {
-      return this.currentMonth === this.day.month;
-    }
+      return this.currentMonth === new Date(this.day.dayDate).getMonth();
+    },
   },
   methods: {
+    fff() {
+      console.log('111', this.day.id.length)
+      return 50 - this.day.id.length;
+    },
     formatMonth(month) {
-      console.log('mon', month + 1)
       return (month+1 < 10 ? '0' : '') + (month+1);
     },
     countAllFreeSpaces(appointmentDate) {
@@ -68,13 +85,16 @@ export default {
       const employeeID = evt.dataTransfer.getData('employeeID');
       const departamentID = evt.dataTransfer.getData('departamentID');
 
-      const appointmentDate = `${day.date}.${this.formatMonth(day.month)}.${day.year}`;
+      const date = new Date(this.day.dayDate).getDate();
+      const month = this.formatMonth(new Date(this.day.dayDate).getMonth());
+      const year = new Date(this.day.dayDate).getFullYear();
+      const appointmentDate = `${date}.${month}.${year}`;
 
       const indexDepartament = departaments.findIndex(dep => dep.id == departamentID);
       const indexEmployee = departaments[indexDepartament].employees.findIndex(i => i.id == employeeID);
       this.countAllFreeSpaces(departaments[indexDepartament].employees[employeeID-1].appointment);
       departaments[indexDepartament].employees[indexEmployee].appointment = appointmentDate;
-
+      this.$emit('addEmployeeIdInCalendar', employeeID, day);
     },
   }
 }
