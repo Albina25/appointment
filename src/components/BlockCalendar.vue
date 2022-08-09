@@ -14,11 +14,18 @@
       </tr>
       </thead>
       <tbody class="calendar__body">
-      <tr v-for="(week, index) in days" :key="`week_${index}`">
-        <td v-for="(day, index) in week" :key="`day_${index}`" class="calendar__td">
-          <calendar-cell :day="day" :currentMonth="currentMonth" @countAllFreeSpaces="countSpaces" @addEmployeeIdInCalendar="addEmployeeIdInCalendar"></calendar-cell>
-        </td>
-      </tr>
+        <tr v-for="(week, index) in days" :key="`week_${index}`">
+          <td v-for="(day, index) in week" :key="`day_${index}`" class="calendar__td">
+            <calendar-cell
+              :day="day"
+              :currentMonth="currentMonth"
+              :appointments="test(day)"
+              @countAllFreeSpaces="countSpaces"
+              @addEmployeeIdInCalendar="addEmployeeIdInCalendar"
+            >
+            </calendar-cell>
+          </td>
+        </tr>
       </tbody>
     </table>
     <div class="align-row">
@@ -42,7 +49,6 @@
 
 <script>
 import CalendarCell from "./CalendarCell.vue";
-// import {departaments} from "../data/departaments";
 
 export default {
   name: "BlockCalendar",
@@ -53,6 +59,7 @@ export default {
     return {
       countInTrolley: 0,
       days: [],
+      appointments: [],
       allFreeSpaces: 1000,
       contractSpaces: 100,
       contractBusySpaces: 0,
@@ -64,20 +71,36 @@ export default {
       allMonths: ["Январь", "Февраль", "Март", "Арпель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
       months: ["Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"],
       lastDay: null,
-
     }
   },
   created() {
     this.showCalendar();
   },
   methods: {
+    test(day) {
+      const a = this.appointments.find(app => app.day === day.dayDate);
+      if (a) return a;
+    },
     addEmployeeIdInCalendar(employeeId, day) {
-      for (let week = 0; week <= this.days.length; week++) {
-        const dayIndex = this.days[week].findIndex(i => i.dayDate === day.dayDate);
-        if (dayIndex >= 0) {
-          if (this.days[week][dayIndex].id.includes(employeeId)) return;
-          this.days[week][dayIndex].id.push(employeeId);
-          break;
+      // for (let week = 0; week <= this.days.length; week++) {
+      //   const dayIndex = this.days[week].findIndex(i => i.dayDate === day.dayDate);
+      //   if (dayIndex >= 0) {
+      //     if (this.days[week][dayIndex].id.includes(employeeId)) return;
+      //     this.days[week][dayIndex].id.push(employeeId);
+      //     break;
+      //   }
+      // }
+      if (this.appointments.length === 0) {
+        this.appointments.push({day: day.dayDate, id: [employeeId], freeSpaces: 49})
+      } else {
+        for(let app of this.appointments) {
+          if (app.day === day.dayDate) {
+            if (app.id.includes(employeeId))  return;
+            app.id.push(employeeId);
+            app.freeSpaces = 50 - app.id.length;
+          } else {
+            this.appointments.push({day: day.dayDate, id: [employeeId], freeSpaces: 49})
+          }
         }
       }
     },
@@ -98,7 +121,7 @@ export default {
       this.lastDay = lastDay;
       for (let i = 1; i <= lastDay; i++) {
         if (new Date(this.year, this.currentMonth, i).getDay() !== 1) {
-          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: [], freeSpaces: null};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: []};
           // const dayDate = {date: i, month: this.currentMonth, year: this.year};
           this.days[week].push(dayDate);
         } else {

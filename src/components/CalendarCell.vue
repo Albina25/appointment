@@ -18,45 +18,28 @@ export default {
   name: "CalendarCell",
   props: {
     day: Object,
+    appointments: Object,
     currentMonth: Number,
   },
   data() {
     return {
-      freeSpaces: 50,
-      freeSpaces1: 50,
       departaments: departaments,
     }
   },
   // watch: {
-  //   departaments: {
+  //   appointments: {
   //     deep: true,
-  //     handler(newdata, oldData) {
-  //       // console.log('newdata', newdata[0].employees[0].appointment)
-  //       // console.log('oldData', oldData[0].employees[0].appointment)
-  //       // let count = 0;
-  //       // for (let i = 0; i < data.length; i++) {
-  //       //   for (let j = 0; j < data[i].employees.length; j++) {
-  //       //     if (data[i].employees[j].appointment) count++;
-  //       //   }
-  //       // }
-  //       // this.registeredEmployees = count;
+  //     handler(data) {
+  //       this.countFreeSpaces(data);
+  //       console.log('appointments', data)
+  //
   //     }
   //   }
   // },
-  watch: {
-    fff1(data) {
-      // handler(data) {
-        console.log('new', data);
-        // this.freeSpaces1 = 50 - data.id.length;
-      // },
-      // deep: true,
-      // immediate: true,
-    },
-  },
   computed: {
-    fff1() {
-      console.log('fff1', this.day.id.length)
-      return 50 - this.day.id.length;
+    freeSpaces() {
+      if (this.appointments) return this.appointments.freeSpaces;
+      else return 50;
     },
     date() {
       return new Date(this.day.dayDate).getDate();
@@ -66,15 +49,10 @@ export default {
     },
   },
   methods: {
-    fff() {
-      console.log('111', this.day.id.length)
-      return 50 - this.day.id.length;
-    },
     formatMonth(month) {
       return (month+1 < 10 ? '0' : '') + (month+1);
     },
     countAllFreeSpaces(appointmentDate) {
-      this.freeSpaces--;
       if (appointmentDate) {
         return;
       } else {
