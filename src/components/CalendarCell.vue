@@ -18,7 +18,7 @@ export default {
   name: "CalendarCell",
   props: {
     day: Object,
-    appointments: Object,
+    employeesIdForDayAppointment: Object,
     currentMonth: Number,
   },
   data() {
@@ -38,7 +38,10 @@ export default {
   // },
   computed: {
     freeSpaces() {
-      if (this.appointments) return this.appointments.freeSpaces;
+      if (this.employeesIdForDayAppointment) {
+        let countId = this.employeesIdForDayAppointment.id.length;
+        return 50 - countId;
+      }
       else return 50;
     },
     date() {
@@ -72,7 +75,8 @@ export default {
       const indexEmployee = departaments[indexDepartament].employees.findIndex(i => i.id == employeeID);
       this.countAllFreeSpaces(departaments[indexDepartament].employees[employeeID-1].appointment);
       departaments[indexDepartament].employees[indexEmployee].appointment = appointmentDate;
-      this.$emit('addEmployeeIdInCalendar', employeeID, day);
+      this.$emit('addEmployeeIdInCalendar', employeeID, day.dayDate);
+
     },
   }
 }

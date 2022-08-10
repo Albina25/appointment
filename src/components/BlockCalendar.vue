@@ -9,9 +9,9 @@
     </div>
     <table class="calendar__table">
       <thead class="calendar__header">
-      <tr>
-        <td v-for="dayWeek in daysWeek" :key="dayWeek" class="calendar__day-week">{{ dayWeek }}</td>
-      </tr>
+        <tr>
+          <td v-for="dayWeek in daysWeek" :key="dayWeek" class="calendar__day-week">{{ dayWeek }}</td>
+        </tr>
       </thead>
       <tbody class="calendar__body">
         <tr v-for="(week, index) in days" :key="`week_${index}`">
@@ -19,9 +19,9 @@
             <calendar-cell
               :day="day"
               :currentMonth="currentMonth"
-              :appointments="test(day)"
+              :employeesIdForDayAppointment="getEmployeesIdForDayAppointment(day.dayDate)"
               @countAllFreeSpaces="countSpaces"
-              @addEmployeeIdInCalendar="addEmployeeIdInCalendar"
+              @addEmployeeIdInCalendar="changeFreeSpacesInCalendar"
             >
             </calendar-cell>
           </td>
@@ -49,6 +49,7 @@
 
 <script>
 import CalendarCell from "./CalendarCell.vue";
+import {departaments} from "../data/departaments";
 
 export default {
   name: "BlockCalendar",
@@ -57,6 +58,7 @@ export default {
   },
   data() {
     return {
+      departaments: departaments,
       countInTrolley: 0,
       days: [],
       appointments: [],
@@ -76,43 +78,64 @@ export default {
   created() {
     this.showCalendar();
   },
-  methods: {
-    test(day) {
-      const a = this.appointments.find(app => app.day === day.dayDate);
-      if (a) return a;
-    },
-    addEmployeeIdInCalendar(employeeId, day) {
-      // for (let week = 0; week <= this.days.length; week++) {
-      //   const dayIndex = this.days[week].findIndex(i => i.dayDate === day.dayDate);
-      //   if (dayIndex >= 0) {
-      //     if (this.days[week][dayIndex].id.includes(employeeId)) return;
-      //     this.days[week][dayIndex].id.push(employeeId);
-      //     break;
-      //   }
-      // }
-      if (this.appointments.length === 0) {
-        this.appointments.push({day: day.dayDate, id: [employeeId], freeSpaces: 49})
-      } else {
-        for(let app of this.appointments) {
-          if (app.day === day.dayDate) {
-            if (app.id.includes(employeeId))  return;
-            app.id.push(employeeId);
-            app.freeSpaces = 50 - app.id.length;
-          } else {
-            this.appointments.push({day: day.dayDate, id: [employeeId], freeSpaces: 49})
+  watch: {
+    departaments: {
+      deep: true,
+      handler(data) {
+        let count = 0;
+        for (let i = 0; i < data.length; i++) {
+          for (let j = 0; j < data[i].employees.length; j++) {
+            if (data[i].employees[j].appointment) count++;
           }
         }
+        this.contractBusySpaces = count;
+        this.contractFreeSpaces = 100 - this.contractBusySpaces;
+        this.allFreeSpaces = 1000 - this.contractBusySpaces;
       }
+    }
+  },
+  methods: {
+    getEmployeesIdForDayAppointment(day) {
+      const dayAppointment = this.appointments.find(app => app.day === day);
+      if (dayAppointment) return dayAppointment;
+      else return null;
+    },
+    changeFreeSpacesInCalendar(employeeId, day) {
+      this.addEmployeeIdInNewDay(employeeId, day);
+      this.removeEmployeeIdInBeforeDay(employeeId, day);
+    },
+    addEmployeeIdInNewDay(employeeId, newDay) {
+      if (this.appointments.length === 0) {
+        this.appointments.push({day: newDay, id: [employeeId]});
+      } else {
+          const index = this.appointments.findIndex(app => app.day === newDay);
+          if(index >= 0) {
+            if (this.appointments[index].id.includes(employeeId))  return;
+            this.appointments[index].id.push(employeeId);
+          } else {
+            this.appointments.push({day: newDay, id: [employeeId]});
+          }
+      }
+    },
+    removeEmployeeIdInBeforeDay(employeeId, newDay) {
+      this.appointments.map(app => {
+        if (app.id.includes(employeeId)) {
+          if (app.day === newDay) return;
+
+          const index = app.id.indexOf(employeeId);
+          app.id.splice(index, 1);
+        }
+      });
     },
     activeMonth(month) {
       let index = this.allMonths.indexOf(month, 0);
       if (index === this.currentMonth) return true;
     },
-    countSpaces() {
-      this.allFreeSpaces--;
-      this.contractFreeSpaces--;
-      this.contractBusySpaces++;
-    },
+    // countSpaces() {
+    //   this.allFreeSpaces--;
+    //   this.contractFreeSpaces--;
+    //   this.contractBusySpaces++;
+    // },
     showCalendar() {
       this.days = [];
       let week = 0;
@@ -121,13 +144,13 @@ export default {
       this.lastDay = lastDay;
       for (let i = 1; i <= lastDay; i++) {
         if (new Date(this.year, this.currentMonth, i).getDay() !== 1) {
-          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: []};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i)};
           // const dayDate = {date: i, month: this.currentMonth, year: this.year};
           this.days[week].push(dayDate);
         } else {
           week++;
           this.days[week] = [];
-          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i), id: []};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth, i)};
           // const dayDate = {date: i, month: this.currentMonth};
           this.days[week].push(dayDate);
         }
@@ -135,7 +158,7 @@ export default {
       if (this.days[0].length > 0) {
         let lastDayBeforeMonth = new Date(this.year, this.currentMonth, 0).getDate();
         for (let i = this.days[0].length; i < 7; i++) {
-          const dayDate = {dayDate: new Date (this.year, this.currentMonth-1, lastDayBeforeMonth), id: []};
+          const dayDate = {dayDate: new Date (this.year, this.currentMonth-1, lastDayBeforeMonth)};
           // const dayDate = {date: lastDayBeforeMonth, month: this.currentMonth-1, year: this.year};
           this.days[0].unshift(dayDate);
           lastDayBeforeMonth--;
@@ -146,18 +169,17 @@ export default {
         let dateNextMonth = 1;
         for (let i = this.days[week].length; i < 7; i++) {
           const dayDate = {dayDate: new Date (this.year, this.currentMonth+1, dateNextMonth), id: []};
-          // const dayDate = {date: dateNextMonth, month: this.currentMonth+1, year: this.year};
           dateNextMonth++;
           this.days[week].push(dayDate);
         }
       }
       return this.days;
     },
-   selectMonth(month) {
-     let index = this.allMonths.indexOf(month, 0);
-     this.currentMonth = index;
-     this.showCalendar();
-   },
+    selectMonth(month) {
+      let index = this.allMonths.indexOf(month, 0);
+      this.currentMonth = index;
+      this.showCalendar();
+    },
   },
 }
 </script>
