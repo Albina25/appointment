@@ -58,9 +58,9 @@ export default {
   data() {
     return {
       countInTrolley: 0,
-      contractSpaces: 100,
-      contractBusySpaces: 0,
-      contractFreeSpaces: 0,
+      // contractSpaces: 100,
+      // contractBusySpaces: 0,
+      // contractFreeSpaces: 0,
     }
   },
 };
@@ -134,7 +134,7 @@ export default {
   }
 
   .block-calendar {
-    max-width: 52%;
+    max-width: 619px;
     margin-right: 35px;
 
     &__months {

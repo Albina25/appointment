@@ -19,8 +19,7 @@
             <calendar-cell
               :day="day"
               :currentMonth="currentMonth"
-              :employeesIdForDayAppointment="getEmployeesIdForDayAppointment(day.dayDate)"
-              @countAllFreeSpaces="countSpaces"
+              :employeesIdForDayAppointment="getEmployeesIdForDayAppointment(day)"
               @addEmployeeIdInCalendar="changeFreeSpacesInCalendar"
             >
             </calendar-cell>
@@ -96,8 +95,10 @@ export default {
   },
   methods: {
     getEmployeesIdForDayAppointment(day) {
-      const dayAppointment = this.appointments.find(app => app.day === day);
-      if (dayAppointment) return dayAppointment;
+      const dayAppointment = this.appointments.find(app => app.day.toISOString() === day.dayDate.toISOString());
+      if (dayAppointment) {
+        return dayAppointment;
+      }
       else return null;
     },
     changeFreeSpacesInCalendar(employeeId, day) {
@@ -108,9 +109,12 @@ export default {
       if (this.appointments.length === 0) {
         this.appointments.push({day: newDay, id: [employeeId]});
       } else {
-          const index = this.appointments.findIndex(app => app.day === newDay);
+          const index = this.appointments.findIndex(app => app.day.toISOString() === newDay.toISOString());
+        console.log('ind', index)
           if(index >= 0) {
-            if (this.appointments[index].id.includes(employeeId))  return;
+            console.log('111', this.appointments[index].id)
+            console.log('empl', employeeId)
+            if (this.appointments[index].id.includes(employeeId)) return;
             this.appointments[index].id.push(employeeId);
           } else {
             this.appointments.push({day: newDay, id: [employeeId]});
@@ -120,7 +124,7 @@ export default {
     removeEmployeeIdInBeforeDay(employeeId, newDay) {
       this.appointments.map(app => {
         if (app.id.includes(employeeId)) {
-          if (app.day === newDay) return;
+          if (app.day.toISOString() === newDay.toISOString()) return;
 
           const index = app.id.indexOf(employeeId);
           app.id.splice(index, 1);
@@ -132,9 +136,9 @@ export default {
       if (index === this.currentMonth) return true;
     },
     // countSpaces() {
-    //   this.allFreeSpaces--;
-    //   this.contractFreeSpaces--;
-    //   this.contractBusySpaces++;
+      // this.allFreeSpaces--;
+      // this.contractFreeSpaces--;
+      // this.contractBusySpaces++;
     // },
     showCalendar() {
       this.days = [];

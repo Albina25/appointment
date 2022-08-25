@@ -55,13 +55,13 @@ export default {
     formatMonth(month) {
       return (month+1 < 10 ? '0' : '') + (month+1);
     },
-    countAllFreeSpaces(appointmentDate) {
-      if (appointmentDate) {
-        return;
-      } else {
-        this.$emit('countAllFreeSpaces');
-      }
-    },
+    // countAllFreeSpaces(appointmentDate) {
+    //   if (appointmentDate) {
+    //     return;
+    //   } else {
+    //     this.$emit('countAllFreeSpaces');
+    //   }
+    // },
     onDrop(evt, day) {
       const employeeID = evt.dataTransfer.getData('employeeID');
       const departamentID = evt.dataTransfer.getData('departamentID');
@@ -73,7 +73,7 @@ export default {
 
       const indexDepartament = departaments.findIndex(dep => dep.id == departamentID);
       const indexEmployee = departaments[indexDepartament].employees.findIndex(i => i.id == employeeID);
-      this.countAllFreeSpaces(departaments[indexDepartament].employees[employeeID-1].appointment);
+      // this.countAllFreeSpaces(departaments[indexDepartament].employees[employeeID-1].appointment);
       departaments[indexDepartament].employees[indexEmployee].appointment = appointmentDate;
       this.$emit('addEmployeeIdInCalendar', employeeID, day.dayDate);
 
